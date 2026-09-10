@@ -1,0 +1,129 @@
+# Intent taxonomy derived from SpotifyCares development data
+# Frozen BEFORE golden set labeling
+
+intents:
+  LOGIN_ACCOUNT_ACCESS:
+    description: >
+      Login problems, account access issues, password reset,
+      account locked, authentication failures, or email/username changes.
+    positive_examples:
+      - "I can't log in to my Spotify account"
+      - "My password isn't working"
+      - "I'm locked out of my account"
+      - "How do I change my email address"
+    excludes:
+      - General account settings without login problems
+
+  BILLING_PAYMENT:
+    description: >
+      Unexpected charges, failed payments, duplicate billing,
+      refunds, payment methods, or payment-related issues.
+    positive_examples:
+      - "I was charged twice for Premium"
+      - "My payment didn't go through"
+      - "I want a refund for this month"
+      - "Why is there an extra charge on my card"
+    excludes:
+      - General Premium plan questions without a payment problem
+
+  SUBSCRIPTION_PLAN:
+    description: >
+      Questions about Premium, Free, plans, upgrading,
+      downgrading, trial periods, or plan features.
+    positive_examples:
+      - "How do I upgrade to Premium"
+      - "What's the difference between Free and Premium"
+      - "Can I get a free trial"
+      - "How do I cancel my subscription"
+    excludes:
+      - Billing issues (use BILLING_PAYMENT)
+      - Family/Student plan questions (use FAMILY_STUDENT_PLAN)
+
+  PLAYBACK_APP_ISSUE:
+    description: >
+      App crashes, playback problems, streaming errors,
+      quality issues, buffering, or device-specific bugs.
+    positive_examples:
+      - "Spotify keeps crashing on my phone"
+      - "Music stops playing randomly"
+      - "The app is very slow"
+      - "I can't download songs for offline play"
+    excludes:
+      - Login problems (use LOGIN_ACCOUNT_ACCESS)
+      - Feature requests without playback issues
+
+  FAMILY_STUDENT_PLAN:
+    description: >
+      Family plan management, student verification,
+      plan members, invite links, or student discount.
+    positive_examples:
+      - "How do I add someone to my Family plan"
+      - "My student discount expired"
+      - "I need to verify my student status"
+      - "Can I remove someone from my Family plan"
+    excludes:
+      - General subscription questions (use SUBSCRIPTION_PLAN)
+
+  ACCOUNT_SECURITY:
+    description: >
+      Account compromise, suspicious activity, hacked accounts,
+      unauthorized access, privacy concerns, or data requests.
+    positive_examples:
+      - "Someone hacked my account"
+      - "I see unfamiliar activity on my account"
+      - "My account was accessed without my permission"
+      - "I need to secure my account"
+    excludes:
+      - Simple login problems (use LOGIN_ACCOUNT_ACCESS)
+      - Privacy policy questions without security concern
+
+  FEATURE_REQUEST:
+    description: >
+      Suggestions for new features, improvements, missing functionality,
+      or UX complaints without a bug or error.
+    positive_examples:
+      - "It would be great if you could add lyrics"
+      - "Please add a dark mode"
+      - "I wish there was a way to sort playlists"
+      - "Can you add lossless audio"
+    excludes:
+      - Bug reports about existing features (use PLAYBACK_APP_ISSUE)
+      - Questions about how to use existing features
+
+  OTHER:
+    description: >
+      Messages that don't fit any other category, including
+      general feedback, praise, off-topic, or ambiguous queries.
+    positive_examples:
+      - "I love Spotify"
+      - "You guys are the best"
+      - "Thanks for the help"
+      - "When will Spotify be available in my country"
+    excludes:
+      - Specific actionable issues that belong to another intent
+
+# Escalation rules
+escalation:
+  auto_handle:
+    confidence_threshold: 0.75
+    retrieval_similarity_threshold: 0.60
+    requires:
+      - recognized_intent
+      - high_confidence
+      - strong_retrieval_evidence
+      - no_safety_concerns
+      - no_account_specific_actions
+  escalate_when:
+    - low_intent_confidence
+    - weak_retrieval_evidence
+    - account_compromise
+    - security_issue
+    - payment_dispute
+    - identity_verification_required
+    - legal_language
+    - safety_concern
+    - threats
+    - severe_abuse
+    - conflicting_intents
+    - model_output_invalid
+    - retrieved_cases_disagree

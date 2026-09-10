@@ -1,0 +1,16 @@
+data/raw/twcs.csv
+data/processed/
+data/samples/
+data/golden/
+outputs/
+*.pyc
+__pycache__/
+.venv/
+.env
+*.egg-info/
+dist/
+build/
+*.log
+embeddings_cache/
+.cache/
+.pytest_cache/

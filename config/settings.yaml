@@ -1,0 +1,65 @@
+# System configuration
+
+brand: SpotifyCares
+
+data:
+  raw_path: data/raw/twcs.csv
+  processed_path: data/processed
+  golden_path: data/golden
+  samples_path: data/samples
+
+retrieval:
+  embedding_model: sentence-transformers/all-MiniLM-L6-v2
+  top_k: 5
+  cache_dir: embeddings_cache
+  similarity_threshold: 0.60
+
+intent:
+  confidence_threshold: 0.75
+  num_intents: 8
+
+escalation:
+  auto_handle:
+    confidence_threshold: 0.75
+    retrieval_similarity_threshold: 0.60
+  flags:
+    account_compromise_keywords:
+      - hacked
+      - compromised
+      - unauthorized access
+      - suspicious activity
+      - stolen
+    payment_keywords:
+      - refund
+      - charged twice
+      - unauthorized charge
+      - dispute
+      - chargeback
+    safety_keywords:
+      - threaten
+      - sue
+      - lawyer
+      - legal action
+      - report
+
+golden:
+  target_size: 200
+  sample_seed: 42
+
+split:
+  dev_ratio: 0.85
+  golden_ratio: 0.15
+  random_seed: 42
+
+evaluation:
+  judge_temperature: 0.0
+  judge_max_retries: 2
+  reply_sample_size: 50
+
+  rubric_dimensions:
+    - correctness
+    - relevance
+    - groundedness
+    - helpfulness
+    - brand_consistency
+    - safety
