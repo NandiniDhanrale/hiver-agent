@@ -122,37 +122,50 @@ def reconstruct_conversations(df: pd.DataFrame, brand: str = "SpotifyCares") -> 
     return conversations
 
 
-def flatten_to_cases(conversations: list[dict]) -> list[dict]:
+def flatten_to_cases(conversations: list[dict], brand: str = "SpotifyCares") -> list[dict]:
     """Flatten conversations to customer-brand case pairs.
 
-    For each customer message followed by a brand reply,
-    create a flattened case record.
+    Only creates a case when the current turn is an inbound customer message
+    and the next turn is an outbound brand reply. Never creates reversed pairs.
     """
     cases = []
     for conv in conversations:
         turns = conv["turns"]
         for i in range(len(turns) - 1):
-            if turns[i]["author_id"] != turns[i+1]["author_id"]:
-                # Build context from prior customer messages
-                context_parts = []
-                for j in range(i):
-                    if turns[j]["author_id"] != turns[i+1]["author_id"]:  # not brand
-                        context_parts.append(turns[j]["text"])
-                context = " ".join(context_parts)
+            current = turns[i]
+            next_turn = turns[i + 1]
 
-                cases.append({
-                    "case_id": f"{conv['conversation_id']}_{i}",
-                    "conversation_id": conv["conversation_id"],
-                    "customer_text": turns[i]["text"],
-                    "conversation_context": context,
-                    "brand_reply": turns[i+1]["text"],
-                    "customer_author_id": turns[i]["author_id"],
-                    "brand": turns[i+1]["author_id"],
-                    "created_at": turns[i].get("created_at", ""),
-                    "num_turns": len(turns)
-                })
+            # Only create case: customer inbound -> brand outbound
+            is_customer_to_brand = (
+                current["author_id"] != brand
+                and current.get("inbound", True) is True
+                and next_turn["author_id"] == brand
+                and next_turn.get("inbound", False) is False
+            )
 
-    logger.info(f"Flattened to {len(cases)} cases")
+            if not is_customer_to_brand:
+                continue
+
+            # Build context from prior customer messages (excluding brand turns)
+            context_parts = []
+            for j in range(i):
+                if turns[j]["author_id"] != brand:
+                    context_parts.append(turns[j]["text"])
+            context = " ".join(context_parts)
+
+            cases.append({
+                "case_id": f"{conv['conversation_id']}_{i}",
+                "conversation_id": conv["conversation_id"],
+                "customer_text": current["text"],
+                "conversation_context": context,
+                "brand_reply": next_turn["text"],
+                "customer_author_id": current["author_id"],
+                "brand": brand,
+                "created_at": current.get("created_at", ""),
+                "num_turns": len(turns)
+            })
+
+    logger.info(f"Flattened to {len(cases)} cases (customer -> {brand} only)")
     return cases
 
 

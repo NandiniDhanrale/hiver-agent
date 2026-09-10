@@ -34,17 +34,17 @@ def heuristic_intent(text: str) -> str:
 
 
 def main(target_size: int = 200, seed: int = 42):
-    """Generate stratified golden set candidates."""
-    # Load dev cases
-    dev_file = PROJECT_ROOT / "data" / "processed" / "dev_cases.json"
-    if not dev_file.exists():
-        print("ERROR: dev_cases.json not found. Run prepare_data.py first.")
+    """Generate stratified golden set candidates from the golden candidate pool."""
+    # Load golden candidates (separate pool from dev_cases)
+    golden_pool_file = PROJECT_ROOT / "data" / "processed" / "golden_candidates.json"
+    if not golden_pool_file.exists():
+        print("ERROR: golden_candidates.json not found. Run prepare_data.py first.")
         return
 
-    with open(dev_file, 'r') as f:
+    with open(golden_pool_file, 'r') as f:
         cases = json.load(f)
 
-    print(f"Loaded {len(cases)} development cases")
+    print(f"Loaded {len(cases)} golden candidate cases")
 
     # Assign intents
     for case in cases:

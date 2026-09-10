@@ -30,12 +30,12 @@ def heuristic_intent(text: str) -> str:
 
 
 def main():
-    # Load dev cases
-    dev_file = PROJECT_ROOT / "data" / "processed" / "dev_cases.json"
-    with open(dev_file, 'r') as f:
+    # Load golden candidates (separate pool from dev_cases)
+    golden_pool_file = PROJECT_ROOT / "data" / "processed" / "golden_candidates.json"
+    with open(golden_pool_file, 'r') as f:
         cases = json.load(f)
 
-    print(f"Loaded {len(cases)} development cases")
+    print(f"Loaded {len(cases)} golden candidate cases")
 
     # Assign intents
     for case in cases:

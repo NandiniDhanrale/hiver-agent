@@ -44,8 +44,8 @@ graph TD
 ### Installation
 
 ```bash
-git clone <repository-url>
-cd hiver-support-agent
+git clone https://github.com/NandiniDhanrale/hiver-agent.git
+cd hiver-agent
 
 python -m venv .venv
 .venv\Scripts\activate  # Windows
