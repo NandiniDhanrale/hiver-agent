@@ -1,0 +1,11 @@
+{
+  "total_rows": 2811774,
+  "brand": "SpotifyCares",
+  "brand_outgoing_replies": 43265,
+  "reconstructed_conversations": 43092,
+  "flattened_cases": 57822,
+  "dev_cases": 49298,
+  "golden_candidates": 8524,
+  "broken_relationships": 173,
+  "broken_pct": 0.4
+}

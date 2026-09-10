@@ -1,16 +1,32 @@
+# Raw data (large Kaggle CSV)
 data/raw/twcs.csv
-data/processed/
-data/samples/
-data/golden/
-outputs/
+data/raw/
+
+# Large caches
+*.pt
+*.bin
+embeddings_cache/
+.cache/
+
+# Environment and secrets
+.env
+
+# Python
 *.pyc
 __pycache__/
-.venv/
-.env
 *.egg-info/
 dist/
 build/
+.venv/
+venv/
+
+# Logs and temp
 *.log
-embeddings_cache/
-.cache/
 .pytest_cache/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
